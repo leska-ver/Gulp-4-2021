@@ -1,0 +1,263 @@
+//Создание Gulp-a 4// Команды из сайта npm
+
+*Если Вас давно не было в gulp-е в Терминале вводим - npm install - и после продолжаем где остановились.
+*ctrl+c - отключаем в Терминале browser-sync и сможем дальше ставить плагины.
+*ctrl+x - вырежем папку/файл, *ctrl+v - вставим её в другом месте. Нужно для переноса github-их папок.
+*плагин часов не проходит в галпе.
+--------------------------------
+1. Создаём на рабочем столе папку(любое латинское название), она должна быть пустой.
+
+2. npm init - 1)Энтер -> 2)Энтер -> 3)description - вводим project (название Вашего проекта), и жмём Энтер -> 4)entry point: (index.js) - вводим main.js(или любое название файла) жмём Энтер -> 5)Энтер -> 6)Энтер -> 7)Энтер -> 8)author: пишем имя автора проекта. жмём Энтер -> 9)Энтер -> 10) Is this OK? (yes): жмём Y и жмём Энтер. Появился paskage.json (Рис. 1.package-json.jpg) 
+
+*Как удалит не нужный плагин - npm uninstall (название плагина) - .
+---
+dependencies - требуется для запуска.
+devDependencies - только для разработки, он отвечает за сборку нашего проекта.
+---
+
+3. npm i gulp -D - Появились node_modules и package-lock.json. В package.json появился "devDependencies": { "gulp": "^4.0.2" } (Рис. 2.Ставим gulp.jpg)
+- Так же ставим - npm i gulp-cli -D -. В package.json появился "gulp-cli": "^2.3.0" .
+
+4. Создаём папку src -> файл index.html
+
+5. Создаём папку scss -> файл main.scss
+
+6. В index.html подключим <link rel="stylesheet" href="css/main.min.css">
+
+7. Создаём файл gulpfile.js для тасков, в папке Вашего проекта. (Рис. 4.Создаём файл gulpfile-js.jpg)
+
+8. npm i node-sass gulp-sass -D . В package.json появился "gulp-sass": "^5.1.0", и "node-sass": "^7.0.1" . Пишем таск const sass = require('gulp-sass')(require('node-sass'));
+
+9. npm i gulp-sourcemaps -D . В package.json появился "gulp-sourcemaps": "^3.0.0" . Пишем таск как на (Рис. 5.Подключаем sourcemaps.jpg).
+
+- gulp styles -
+Появился dist -> css -> main.css и main.css.map (Рис. 6.Появился dist.jpg).
+
+10. Теперь проверим как наш код преобразуется в файле main.css(dist->css->main.css).
+- В файле index.html(src) пишем <ul class="red">Красный ul<li class="red__item">Красный li</li><li class="red__item">Красный li</li></ul>.
+- В файле main.scss пишем стили 
+.red {
+    color: #000;
+    &__item {
+	color: red;
+    }	
+}
+- gulp styles -
+Результат (Рис. 7.Преобразование кода в файле main-css.jpg), в браузере ещё не будет показывать результат.
+
+11. Теперь нас не устраивает sass.logError нам недо поставить gulp-notify. - npm i gulp-notify -D -. В package.json появился "gulp-notify": "^4.0.0" . 
+
+12. Пишем таск и меняем sass.logError на notify.onError() . Результат (Рис. 8.Подключаем notify.jpg).
+
+- gulp styles -
+Ошибок в main.css нет. В Терминале если что выскачит Error: Invalid CSS after....... .
+
+13. Ставим autoprefixer, rename, cleanCSS - npm i gulp-autoprefixer gulp-rename gulp-clean-css -D -. В package.json появился "gulp-autoprefixer": "^8.0.0", "gulp-rename": "^2.0.0" и "gulp-clean-css": "^4.3.0" . Пишем таск. Результат (Рис. 9.Подключаем gulp-autoprefixer gulp-rename gulp-clean-css.jpg).
+
+- gulp styles -
+Появились в папке dist ещё два файла main.min.css и main.min.css.map . Результат (Рис. 10.Минифицированые файлы.jpg).
+
+14. npm i browser-sync -D . В package.json появился "browser-sync": "^2.27.9" . Пишем таск. Результат (Рис. 11.Подключаем browser-sync.jpg).
+
+- gulp watchFiles -
+Закинул на сайт, он у нас не оформлен поэтому мы видим Cannot GET /
+
+15. npm i gulp-file-include -D . В package.json появился "gulp-file-include": "^2.3.0" . Пишем таск. Результат (Рис. 12.Подключаем gulp-file-include.jpg).
+
+- gulp -
+Открылся наш сайт, совсеми нашими стилями 
+
+16. Создаём файл src->scss->second.scss в папке dist->css появились файлы second.min.css и second.min.css.map. Если перед названием поставить _second.scss, то файл не попадёт в dist->css. С помощью @import можно управлять стилями. Результат (Рис. 13.Подключаем import для управлением стилями.jpg).
+
+17. Создаём папку src->img, суда скачали картинку(xoma.jpg). Пишем таск. Результат (Рис. 14.Создаём img.jpg).
+Удаляем папку dist для проверки кода.
+
+- gulp -
+Папка dist воскресла, внутри неё воскрес файл main.min.css и main.min.css.map . И появилась папка img с картинкой(xoma.jpg).
+
+18. npm i gulp-svg-sprite gulp-svgo -D . В package.json появился "gulp-svg-sprite": "^1.5.0" и "gulp-svgo": "^2.2.1". Создаём папку src -> img -> to-sprite. Пишем таск. Результат (Рис. 15.Подключаем svgSprites и svgOptimize.jpg).
+
+---Пример как ставить картинки svg---
+В src -> index.html пишем:
+<svg>
+ <use xlink:href="img/sprite.svg#test"></use>
+</svg>
+Здесь sprite.svg из таска и из папки dist, а test это test.svg из папки src -> img -> to-sprite.
+--------------------------------------------------------
+
+19. Прежде чем продолжить сборку надо перенести всю вёрстку суда. Создаём каждому разделу папку и перед файлом ставим _ , в пример src->scss->components->_header.scss . В файлах пишем:
+.header {
+    &__logo {
+    	
+    }
+
+    &__top {
+    	
+    }		
+} 
+
+В src создала папки:
+****************************
+-js -> components(auto-Jeka.js; footer-modal.js; search.js), vendor(inputmask.min.js; just-validate.js; just-validate.min.js). В components файлы js пока пустые. just-validate один для галпа другой от простой вёртстки взять. 
+
+- img закинут картинки проекта.
+
+- partials делим html по частям. header.html; about.html; др.. др.. др.. footer.html;
+
+- fonts шрифты.
+
+-scss -> components(header.scss; about.scss; др.. др.. др.. footer.scss), vendor(normalize.css), mixins(_breakpoint.scss; _font-face.scss) В components файлы scss пока пустые. 
+Результат (Рис. 16.src создание папок и их файлов.jpg).
+****************************
+
+В src создала внутри папки scss файлы:
+****************************
+-_fonts.scss внутри подключила шрифты: 
+@include font-face("Roboto", "robotoBold", 700, bold);
+@include font-face("Roboto", "robotoBlack", 900, black);
+@include font-face("Roboto", "robotoMedium", 500, medium);
+@include font-face("Roboto", "robotoRegular", 400, normal);
+
+-_mixins.scss внутри подключила шрифты: 
+@import "./mixins/breakpoint";
+@import "./mixins/font-face";
+
+-_font-face.scss заранее напишим ему его стили, иначе будет показывать ошибку Error: no mixin named font-face, в mixin 
+@mixin font-face($font-family, $url, $weight, $style) {
+  @font-face {
+    font-family: "#{$font-family}";
+    src: url('../fonts/#{$url}.woff2') format("woff2"), url('../fonts/#{$url}.woff') format("woff");
+    font-weight: #{$weight};
+    font-display: swap;
+    font-style: $style;
+  }
+}
+
+-_setings.scss содержит общие стили css, не меняла. @include desktop пока не пишем
+ 
+-_vars.scss содержит стили root, не меняла.
+
+main.scss содержит:
+//базовые стили
+@import "vars";
+@import "mixins";
+@import "fonts";
+@import "setings";
+
+// подключения компонентов страницы
+@import "./components/header";
+@import "./components/about";
+и др. др. др..
+@import "./components/footer";
+
+style.scss содержит:
+@import "components/_header.scss";
+@import "components/_about.scss";
+и др. др. др..
+@import "components/_footer.scss";
+
+vendor.scss внутри подключили: 
+@import "./vendor/normalize.css";
+
+index.html подключили через:
+@include('partials/header.html')
+@include('partials/about.html')
+и др.. и др.. и др...
+@include('partials/footer.html')
+bootstrap-grid.min.css подключили бычным способом.
+Результат (Рис. 17.scss создание файлов.jpg). html объединил, а стили файлов.scs пока не работают
+****************************
+
+20. npm i del -D . В package.json появился "del": "^6.0.0". Пишем таск. Результат (Рис. 18.gulp-del.jpg).
+
+- gulp default -
+В папке dist удалились файлы main.min.css и main.min.css.map, потом воскреснуть 22-го этапа. А сайт открывается.  
+
+21. Подключаем:
+- npm i gulp-babel -D . В package.json появился "gulp-babel": "^8.0.0". Пишем в gulpfile - const babel = require('gulp-babel');
+И к нему надо добавить другие версии - npm i @babel/core @babel/preset-env babel-loader -D -. 
+В package.json появился "@babel/core": "^7.17.9", "@babel/preset-env": "^7.16.11", "babel-loader": "^8.2.5"
+
+- npm i gulp-uglify-es -D . В package.json появился "gulp-uglify-es": "^3.0.0". Пишем const uglify = require('gulp-uglify-es').default;
+
+- npm i gulp-rev -D . В package.json появился "gulp-rev": "^9.0.0". Пишем const rev = require('gulp-rev');
+
+- npm i gulp-rev-rewrite -D . В package.json появился "gulp-rev-rewrite": "^5.0.0". Пишем const revRewrite = require('gulp-rev-rewrite'); 
+
+- npm i gulp-rev-delete-original -D . В package.json появился "gulp-rev-delete-original": "^0.2.3". Пишем const revDel = require('gulp-rev-delete-original');
+
+- npm i gulp-htmlmin -D . В package.json появился "gulp-htmlmin": "^5.0.1". Пишем const htmlmin = require('gulp-htmlmin');
+
+- npm i gulp-if -D . В package.json появился "gulp-if": "^3.0.0". Пишем const gulpif = require('gulp-if');
+
+//С новой версией imagemin выдал ошибку, с предпоследней - то же самое. Мы указываем конкретную версию.
+- npm i gulp-imagemin@7.1.0 -D . В package.json появился "gulp-imagemin": "^7.1.0". Пишем const imagemin = require('gulp-imagemin'); Пишем ещё одну трубу(.pipe) Рис. 19.imagemin@7.1.0.jpg
+
+- gulp default -
+Сайт открылся значит ошибок нет. Наша картинка в src->img->xoma.jpg весить 83.63КБ, а dist->img->xoma.jpg весить 41.03КБ
+
+22. Теперь укажим файл main.scss. Рис. 20.Воскрес css c файлами в dist-е.jpg . Стили заработали в файлах.scss.
+//В src->scss->main.scss подключаем - @import "./vendor/bootstrap-grid.min.css"; - Из index.html удаляем//
+
+23. Пишем Webpack 
+- npm i webpack webpack-stream -D . В package.json появился "webpack": "^5.72.0", "webpack-stream": "^7.0.0". Пишем таск const webpack = require('webpack');
+const webpackStream = require('webpack-stream');. Результат (Рис. 21.Подключаем webpack.jpg) и webpackBuild - (Рис. 22.Подключаем webpackBuild.jpg). 
+exports.default переименовали в exports.dev
+
+24. Пишем таск для fonts перед const watchFiles = () => {}
+const fonts = () => {
+  return src(['./src/fonts/*.woff2', './src/fonts/*.woff'])
+  .pipe(dest('./dist/fonts'))
+}
+
+25. Изменяем styles и пишем ещё таск с stylesBuild. Результат (Рис. 23.Подключаем styles и stylesBuild.jpg).
+Теперь для dev и Build разный экспорт:
+exports.dev = series(clean, htmlInclude, styles, scripts, fonts, imgToApp, svgSprites, watchFiles); - Вызов в Терминале gulp dev
+exports.build = series(clean, htmlInclude, stylesBuild, scriptsBuild, fonts, imgToApp, svgSprites); - Вызов в Терминале gulp Build 
+
+26. npm install --save normalize-scss -D . В package.json появился "normalize-scss": "^7.0.1". В src->scss->main.scss подключаем - @import "../../node_modules/normalize-scss/sass/normalize"; и @include normalize(); 
+
+- gulp dev -
+в dist->main.min.css подключились коды normalize. Пока будет ошибку выдавать т.к ещё не создан файл main.js
+Ошибка - 'scripts' errored after 112 ms ....... 
+
+27. npm i jquery -D . В package.json появился "jquery": "^3.6.0". В index.html(src) библиотеку jquery-1.12.4.min.js закоментировать.
+
+28. npm i jquery-ui -D . В package.json появился "jquery-ui": "^1.13.1". В index.html(src) библиотеку jquery-ui.min.js закоментировать.
+В WEBPACK ставим:
+plugins: [
+        new webpack.ProvidePlugin({
+          $: 'jquery',
+          jQuery: 'jquery'
+        }),
+      ]
+
+29. npm i inputmask -D . В package.json появился "inputmask": "^5.0.7". Создаём и пишем в src->js->main.js - import "inputmask";
+- npm i just-validate -D . В package.json появился "just-validate": "^3.5.2". Пишем в src->js->main.js - import "../../node_modules/just-validate/dist/js/just-validate.min.js"; Смотрим как в node_modules стоит just-validate, может не так встать. Результат (Рис. 26.just-validate.jpg).
+Закоментировали в index.html(src) библиотеки just-validate.min.js(just-validate.js) и inputmask.min.js(inputmask.js).
+
+30. В index.html(src) закоментируем все Мои js файлы и внутри них вместо document.addEventListener("DOMContentLoaded", function () {} пишем function autoJeka () {}, в конце пишем export default autoJeka;.
+Где нужен jquery пишем import $ from "jquery"; 
+
+**************************************************************
+Пишем в src->js->main.js 
+import autoJeka from "./components/auto-Jeka";
+import search from "./components/search";
+import footerModal from "./components/footer-modal";
+
+document.addEventListener('DOMContentLoaded', function() {
+  autoJeka();
+  search();
+  footerModal();
+});
+**************************************************************
+
+31.Создадим файл .gitignore, чтобы в github не грузился node_modules. В нутри папки пишем - node_modules/ -.
+
+32. В scss->mixins->breakpoint.scss пишем медиа запросы. Всем src->scss->components файлам и src->scss->_setings(здесь так - @import "mixins/_breakpoint.scss";) подключаем _breakpoints.scss. Результат (Рис. 27.@mixin.jpg)
+
+33. src->scss->_second.scss удалили
+
+
+
+
